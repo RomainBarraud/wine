@@ -8,12 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       # may need to setup NodeJS & Python3 on e.g. self-hosted
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '16'
-      # - uses: actions/setup-python@v4
-      #   with:
-      #     python-version: '3.x'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
       - uses: iterative/setup-cml@v1
       - name: Train model
         run: |
@@ -25,7 +25,11 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Post reports as comments in GitHub PRs
-          echo "METRICS"
-          cat results.txt
-          cat results.txt >> report.md
+          echo "## Model metrics" > report.md
+          cat metrics.txt >> report.md
+
+          echo "## Data viz" > report.md
+          echo "![](./feature_importance.png)" >> report.md
+          echo "![](./residuals.png)" >> report.md
+
           cml comment create report.md
